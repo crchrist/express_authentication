@@ -15,9 +15,6 @@ app.use(require('morgan')('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public'));
 app.use(layouts);
-app.use(passport.initialize());      // Initialize passport
-app.use(passport.session());         // Add a session
-
 
 app.use(session({
   secret: SECRET_SESSION,
@@ -32,16 +29,25 @@ app.use((req, res, next) => {
   next();
 })
 
+app.use(passport.initialize());      // Initialize passport
+app.use(passport.session());         // Add a session
+
+
 app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.get('/profile', (req, res) => {
-  res.render('profile');
-});
+// app.get('/profile', (req, res) => {
+//   res.render('profile');
+// });
 
 app.use('/auth', require('./controllers/auth'));
 
+
+app.get('/profile', isLoggedIn, (req, res) => {
+  const { id, name, email } = req.user.get();
+  res.render('profile', { id, name, email });
+});
 
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
