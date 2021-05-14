@@ -21,7 +21,11 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+
 app.use(flash());
+app.use(passport.initialize());      // Initialize passport
+app.use(passport.session());         // Add a session
+
 app.use((req, res, next) => {
   console.log(res.locals);
   res.locals.alerts = req.flash();
@@ -29,8 +33,8 @@ app.use((req, res, next) => {
   next();
 })
 
-app.use(passport.initialize());      // Initialize passport
-app.use(passport.session());         // Add a session
+// app.use(passport.initialize());      // Initialize passport
+// app.use(passport.session());         // Add a session
 
 
 app.get('/', (req, res) => {
